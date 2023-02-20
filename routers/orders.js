@@ -5,7 +5,7 @@ const router = express.Router();
 
 
 router.get('/', async (req, res) => {
-    const orderList = await Order.find().populate("user").sort({ "dateOrdered": -1 });
+    const orderList = await Order.find().populate("user","name").sort({ "dateOrdered": -1 });
     if (!orderList) {
         res.status(500).json({
             success: false
@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
     res.send(orderList);
 })
 router.get('/:id', async (req, res) => {
-    const order = await Order.findById(req.params.id).populate("user").populate({ path: "orderItems", populate: { path: "product", populate: "category" } });
+    const order = await Order.findById(req.params.id).populate("user","name").populate({ path: "orderItems", populate: { path: "product", populate: "category" } });
     if (!order) {
         res.status(500).json({
             success: false
@@ -85,8 +85,8 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', (req, res) => {
     Order.findByIdAndRemove(req.params.id).then(async (order) => {
         if (order) {
-            order.orderItems.map(async (orderItem) => {
-                await orderItem.findByIdAndRemove(orderItem);
+            await order.orderItems.map(async (orderItem) => {
+                await OrderItems.findByIdAndRemove(orderItem);
             })
             return res.status(200).json({ success: true, message: 'The Order is Deleted' })
         }

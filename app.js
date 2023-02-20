@@ -7,6 +7,8 @@ const cors = require('cors');
 const authJwt = require('./helpers/jwt');
 const errorHandler = require('./helpers/error-handler')
 
+const PORT = process.env.PORT || 3000
+
 //IT ALLOWS ANY OTHER HTTP REQUEST TO BE PASSED FROM ANY ORIGIN//
 app.use(cors());
 app.options('*',cors());
@@ -40,7 +42,7 @@ mongoose.connect(process.env.CONNECTION_STRING)
         console.log(err);
     })
 
-app.listen(3000, () => {
+app.listen(PORT, () => {
     console.log(api);
     console.log("server is running on http://localhost:3000");
 })
